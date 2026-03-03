@@ -2,6 +2,7 @@ package org.example.qluser.dao;
 
 import org.example.qluser.model.User;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ public class UserDao implements IUserDAO{
     private static final String SELECT_ALL_USERS="select * from users;";
     private static final String DELETE_USERS_SQL="delete from users where id = ?;";
     private static final String UPDATE_USERS_SQL="update users set name = ?, email = ?, country = ? where id = ?;";
-
+    private static final String SEARCH_USERS_SQL="select * from users where country like ? ;";
     public UserDao() {
     }
     private Connection getConnection(){
@@ -125,5 +126,32 @@ public class UserDao implements IUserDAO{
                 }
             }
         }
+    }
+    public List<User> sortUser() throws SQLException {
+        List<User> users=new ArrayList<>();
+        try(Connection connection=getConnection();PreparedStatement preparedStatement=connection.prepareCall("call sort();");){
+            ResultSet rs=preparedStatement.executeQuery();
+            while (rs.next()){
+                int id=rs.getInt("id");
+                String name1=rs.getString("name");
+                String email=rs.getString("email");
+                String country=rs.getString("country");
+                users.add(new User(id,name1,email,country));
+            }
+            return users;
+        }
+
+
+    }
+    public List<User> searchUser(String country) throws SQLException {
+         List<User> users=new ArrayList<>();
+         try(Connection connection=getConnection();PreparedStatement preparedStatement=connection.prepareStatement(SEARCH_USERS_SQL)){
+             preparedStatement.setString(1,'%'+country+'%');
+             ResultSet rs=preparedStatement.executeQuery();
+             while (rs.next()){
+                    users.add(new User(rs.getInt("id"),rs.getString("name"),rs.getString("email"),rs.getString("country")));
+             }
+             return users;
+         }
     }
 }

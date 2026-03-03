@@ -101,6 +101,8 @@
 
     <div style="text-align:center;">
         <a href="/users?action=create" class="add-btn">+ Add New User</a>
+        <a href="/users?sort=asc" class="add-btn">Sort user</a>
+        <a href="/users?action=search" class="add-btn">+ Search users</a>
     </div>
 
     <table>

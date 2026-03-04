@@ -1,5 +1,4 @@
 package org.example.qluser.controller;
-
 import org.example.qluser.dao.UserDao;
 import org.example.qluser.model.User;
 
@@ -85,7 +84,8 @@ public class UserServlet extends HttpServlet {
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
         int id = Integer.parseInt(request.getParameter("id"));
-        User user = userDao.selectUser(id);
+       // User user = userDao.selectUser(id);
+        User user = userDao.getUserById(id);
         request.setAttribute("user", user);
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/user/edit.jsp");
         dispatcher.forward(request, response);
@@ -110,7 +110,8 @@ public class UserServlet extends HttpServlet {
         String email = request.getParameter("email");
         String country = request.getParameter("country");
         User user = new User(name, email, country);
-        userDao.insertUser(user);
+        //userDao.insertUser(user);
+        userDao.insertUserStore(user);
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/user/create.jsp");
         dispatcher.forward(request, response);
     }

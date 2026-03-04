@@ -90,7 +90,7 @@
         <a href="users?action=users">← Back to List</a>
     </div>
 
-    <form method="post">
+    <form method="post" onsubmit="return validateEmail()">
 
         <div class="form-group">
             <label>User Name</label>
@@ -99,7 +99,8 @@
 
         <div class="form-group">
             <label>User Email</label>
-            <input type="text" name="email" required/>
+            <input type="text" name="email" id="email" onblur="checkEmail()" required/>
+            <small id="emailError" style="color:red;"></small>
         </div>
 
         <div class="form-group">
@@ -113,4 +114,23 @@
 </div>
 
 </body>
+<script>
+    function checkEmail() {
+        let email = document.getElementById("email").value;
+        let error = document.getElementById("emailError");
+        let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!pattern.test(email)) {
+            error.innerText = "Email không hợp lệ!";
+            return false;
+        } else {
+            error.innerText = "";
+            return true;
+        }
+    }
+
+    function validateEmail() {
+        return checkEmail(); // kiểm tra khi submit
+    }
+</script>
 </html>

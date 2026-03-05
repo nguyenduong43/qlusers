@@ -62,6 +62,9 @@ public class UserServlet extends HttpServlet {
                 case "sort":
                     showSortForm(request, response);
                     break;
+                case "test-without-tran":
+                    testWithoutTran(request,response);
+                    break;
                 default:
                     listUser(request, response);
                     break;
@@ -70,7 +73,9 @@ public class UserServlet extends HttpServlet {
             throw new ServletException(ex);
         }
     }
-
+    private void testWithoutTran(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
+        userDao.insertUpdateWithoutTransaction();
+    }
     private void listUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
         String sort = request.getParameter("sort");
         List<User> listUser;

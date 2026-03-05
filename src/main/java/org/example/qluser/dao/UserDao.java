@@ -3,7 +3,9 @@ package org.example.qluser.dao;
 import org.example.qluser.model.User;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +19,17 @@ public class UserDao implements IUserDAO {
     private static final String DELETE_USERS_SQL = "delete from users where id = ?;";
     private static final String UPDATE_USERS_SQL = "update users set name = ?, email = ?, country = ? where id = ?;";
     private static final String SEARCH_USERS_SQL = "select * from users where country like ? ;";
-
+    private static final String SQL_INSERT="insert into EMPLOYEE(NAME,SALARY,CREATED_DATE) values(?,?,?);";
+    private static final String SQL_UPDATE="update EMPLOYEE set SALARY = ? where ID = ?;";
+    private static final String SQL_TABLE_CREATE = "CREATE TABLE EMPLOYEE"
+            + "("
+            + " ID serial,"
+            + " NAME varchar(100) NOT NULL,"
+            + " SALARY numeric(15, 2) NOT NULL,"
+            + " CREATED_DATE timestamp,"
+            + " PRIMARY KEY (ID)"
+            + ")";
+    private static final String SQL_TABLE_DROP = "DROP TABLE IF EXISTS EMPLOYEE";
     public UserDao() {
     }
 
@@ -240,6 +252,29 @@ public class UserDao implements IUserDAO {
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
+        }
+    }
+    @Override
+    public void insertUpdateWithoutTransaction()
+    {
+        try(Connection conn=getConnection();Statement statement=conn.createStatement();
+        PreparedStatement psInsert=conn.prepareStatement(SQL_INSERT);
+        PreparedStatement psUpdate=conn.prepareStatement(SQL_UPDATE);){
+                    statement.execute(SQL_TABLE_DROP);
+                    statement.execute(SQL_TABLE_CREATE);
+            psInsert.setString(1,"Quynh");
+            psInsert.setBigDecimal(2,new BigDecimal(10));
+            psInsert.setTimestamp(3,Timestamp.valueOf(LocalDateTime.now()));
+            psInsert.executeUpdate();
+            psInsert.setString(1, "Ngan");
+            psInsert.setBigDecimal(2, new BigDecimal(20));
+            psInsert.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
+            psInsert.execute();
+            psUpdate.setBigDecimal(2,new BigDecimal(999.99));
+            psUpdate.setString(2,"Quynh");
+            psUpdate.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }

@@ -14,4 +14,5 @@ public interface IUserDAO {
     public List<User> sortUser() throws SQLException;
     public User getUserById(int id);
     public void insertUserStore(User user) throws SQLException;
+    void addUserTransaction(User user, List<Integer> permission);
 }

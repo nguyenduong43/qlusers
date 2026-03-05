@@ -109,9 +109,22 @@ public class UserServlet extends HttpServlet {
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String country = request.getParameter("country");
+//        User user = new User(name, email, country);
+//        //userDao.insertUser(user);
+//        userDao.insertUserStore(user);
+//        RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/user/create.jsp");
+//        dispatcher.forward(request, response);
+        String add=request.getParameter("add");
+        String edit=request.getParameter("edit");
+        String delete=request.getParameter("delete");
+        String view=request.getParameter("view");
+        List<Integer> permission=new ArrayList<>();
+        if(add!=null) permission.add(1);
+        if(edit!=null) permission.add(2);
+        if(delete!=null) permission.add(3);
+        if(view!=null) permission.add(4);
         User user = new User(name, email, country);
-        //userDao.insertUser(user);
-        userDao.insertUserStore(user);
+        userDao.addUserTransaction(user, permission);
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/user/create.jsp");
         dispatcher.forward(request, response);
     }

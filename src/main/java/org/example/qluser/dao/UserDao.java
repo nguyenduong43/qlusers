@@ -254,27 +254,54 @@ public class UserDao implements IUserDAO {
             }
         }
     }
-    @Override
-    public void insertUpdateWithoutTransaction()
-    {
-        try(Connection conn=getConnection();Statement statement=conn.createStatement();
+//    @Override
+//    public void insertUpdateWithoutTransaction()
+//    {
+//        try(Connection conn=getConnection();Statement statement=conn.createStatement();
+//        PreparedStatement psInsert=conn.prepareStatement(SQL_INSERT);
+//        PreparedStatement psUpdate=conn.prepareStatement(SQL_UPDATE);){
+//                    statement.execute(SQL_TABLE_DROP);
+//                    statement.execute(SQL_TABLE_CREATE);
+//            psInsert.setString(1,"Quynh");
+//            psInsert.setBigDecimal(2,new BigDecimal(10));
+//            psInsert.setTimestamp(3,Timestamp.valueOf(LocalDateTime.now()));
+//            psInsert.executeUpdate();
+//            psInsert.setString(1, "Ngan");
+//            psInsert.setBigDecimal(2, new BigDecimal(20));
+//            psInsert.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
+//            psInsert.execute();
+//            psUpdate.setBigDecimal(2,new BigDecimal(999.99));
+//            psUpdate.setString(2,"Quynh");
+//            psUpdate.execute();
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+   @Override
+    public void insertUpdateUseTransaction(){
+        try(Connection conn=getConnection();
+        Statement statement= conn.createStatement();
         PreparedStatement psInsert=conn.prepareStatement(SQL_INSERT);
-        PreparedStatement psUpdate=conn.prepareStatement(SQL_UPDATE);){
-                    statement.execute(SQL_TABLE_DROP);
-                    statement.execute(SQL_TABLE_CREATE);
+        PreparedStatement psUpdate=conn.prepareStatement(SQL_UPDATE);)
+        {
+            statement.execute(SQL_TABLE_DROP);
+            statement.execute(SQL_TABLE_CREATE);
+            conn.setAutoCommit(false);
             psInsert.setString(1,"Quynh");
             psInsert.setBigDecimal(2,new BigDecimal(10));
             psInsert.setTimestamp(3,Timestamp.valueOf(LocalDateTime.now()));
-            psInsert.executeUpdate();
+            psInsert.execute();
             psInsert.setString(1, "Ngan");
             psInsert.setBigDecimal(2, new BigDecimal(20));
             psInsert.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
             psInsert.execute();
-            psUpdate.setBigDecimal(2,new BigDecimal(999.99));
+            psUpdate.setBigDecimal(1,new BigDecimal(999.99));
             psUpdate.setString(2,"Quynh");
             psUpdate.execute();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            conn.commit();
+            conn.setAutoCommit(true);
+        }catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

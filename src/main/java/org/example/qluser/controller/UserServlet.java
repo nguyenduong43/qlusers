@@ -82,7 +82,8 @@ public class UserServlet extends HttpServlet {
         List<User> listUser;
         if (sort != null) {
             listUser = userDao.sortUser();
-        } else listUser = userDao.selectAllUsers();
+        } else //listUser = userDao.selectAllUsers();
+        listUser = userDao.selectUserStore();
         request.setAttribute("listUser", listUser);
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/user/list.jsp");
         dispatcher.forward(request, response);
@@ -104,7 +105,8 @@ public class UserServlet extends HttpServlet {
 
     private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
         int id = Integer.parseInt(request.getParameter("id"));
-        userDao.deleteUser(id);
+       // userDao.deleteUser(id);
+        userDao.deleteUserStore(id);
         List<User> listUser = userDao.selectAllUsers();
         request.setAttribute("listUser", listUser);
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/user/list.jsp");
@@ -141,7 +143,8 @@ public class UserServlet extends HttpServlet {
         String country = request.getParameter("country");
         int id = Integer.parseInt(request.getParameter("id"));
         User user = new User(id, name, email, country);
-        userDao.updateUser(user);
+       // userDao.updateUser(user);
+        userDao.updateUserStore(user);
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/user/edit.jsp");
         dispatcher.forward(request, response);
     }

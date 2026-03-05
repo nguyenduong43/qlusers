@@ -304,4 +304,50 @@ public class UserDao implements IUserDAO {
             e.printStackTrace();
         }
     }
+    @Override
+    public List<User> selectUserStore() {
+        List<User> user=new ArrayList<>();
+        String query="call view();";
+        try(Connection connection=getConnection();CallableStatement callableStatement=connection.prepareCall(query);)
+        {
+           ResultSet rs= callableStatement.executeQuery();
+           while(rs.next())
+           {
+               int id=rs.getInt("id");
+               String name=rs.getString("name");
+               String email=rs.getString("email");
+               String country=rs.getString("country");
+               user.add(new User(id,name,email,country));
+           }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+    public boolean updateUserStore(User user) throws SQLException {
+        String query = "call update_user(?,?,?,?);";
+        try (Connection connection = getConnection(); CallableStatement callableStatement = connection.prepareCall(query)) {
+            callableStatement.setString(1, user.getName());
+            callableStatement.setString(2, user.getEmail());
+            callableStatement.setString(3, user.getCountry());
+            callableStatement.setInt(4, user.getId());
+            return callableStatement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public boolean deleteUserStore(int id) throws SQLException {
+        String query="call delete_user(?);";
+        try (Connection connection=getConnection();
+        CallableStatement callableStatement=connection.prepareCall(query);)
+        {
+            callableStatement.setInt(1,id);
+            return callableStatement.executeUpdate() > 0;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
